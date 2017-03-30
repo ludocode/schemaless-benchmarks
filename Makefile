@@ -67,13 +67,13 @@ run-iterations:
 # global targets
 
 .PHONY: fetch
-fetch: fetch-mpack fetch-cmp fetch-msgpack fetch-rapidjson fetch-yajl fetch-jansson fetch-libbson fetch-binn fetch-udp-json fetch-ubj fetch-mongo-cxx
+fetch: fetch-mpack fetch-cmp fetch-msgpack fetch-cwpack fetch-rapidjson fetch-yajl fetch-jansson fetch-libbson fetch-binn fetch-udp-json fetch-ubj fetch-mongo-cxx
 
 .PHONY: build
-build: build-common build-hash build-mpack build-cmp build-msgpack build-rapidjson build-yajl build-jansson build-libbson build-binn build-udp-json build-ubj build-mongo-cxx
+build: build-common build-hash build-mpack build-cmp build-msgpack build-cwpack build-rapidjson build-yajl build-jansson build-libbson build-binn build-udp-json build-ubj build-mongo-cxx
 
 .PHONY: run
-run: run-hash run-mpack run-cmp run-msgpack run-rapidjson run-yajl run-jansson run-libbson run-binn run-udp-json run-ubj run-mongo-cxx
+run: run-hash run-mpack run-cmp run-msgpack run-cwpack run-rapidjson run-yajl run-jansson run-libbson run-binn run-udp-json run-ubj run-mongo-cxx
 
 .PHONY: data
 data: data-mp data-json data-bson data-binn data-ubjson
@@ -466,6 +466,64 @@ build/msgpack-cpp-pack: build/msgpack/msgpack-cpp-pack.o $(common-objs) $(msgpac
 .PHONY: run-msgpack-cpp-pack
 run-msgpack-cpp-pack: build/msgpack-cpp-pack
 	build/msgpack-cpp-pack $(OBJECT_SIZES)
+
+
+
+# cwpack
+
+cwpack-version := 1.1
+cwpack-url := https://github.com/clwi/CWPack/archive/v$(cwpack-version).tar.gz
+cwpack-dir := contrib/cwpack/CWPack-$(cwpack-version)
+cwpack-header := $(cwpack-dir)/src/cwpack.h
+
+.PHONY: fetch-cwpack
+fetch-cwpack: $(cwpack-header)
+$(cwpack-header):
+	mkdir -p contrib/cwpack
+	cd contrib/cwpack ;\
+		curl -LO $(cwpack-url) ;\
+		tar -xzf v$(cwpack-version).tar.gz
+
+build/cwpack/cwpack.o: $(cwpack-header)
+	mkdir -p build/cwpack
+	$(CC) $(CFLAGS) -I $(cwpack-dir)/src -c -o build/cwpack/cwpack.o --include $(cwpack-dir)/src/cwpack.c $(cwpack-dir)/goodies/basic-contexts/basic_contexts.c
+
+CWPACKFLAGS = $(CFLAGS) \
+	-I $(cwpack-dir)/src \
+	-I $(cwpack-dir)/goodies/basic-contexts \
+	-DBENCHMARK_CWPACK_VERSION='"'$(cwpack-version)'"'
+
+.PHONY: run-cwpack
+run-cwpack: run-cwpack-write run-cwpack-read
+
+.PHONY: build-cwpack
+build-cwpack: build/cwpack-write build/cwpack-read
+
+# cwpack-read
+
+build/cwpack/cwpack-read.o: $(common-headers) $(cwpack-header) src/cwpack/cwpack-read.c
+	mkdir -p build/cwpack
+	$(CC) $(CWPACKFLAGS) -c -o $@ src/cwpack/cwpack-read.c
+
+build/cwpack-read: build/cwpack/cwpack.o build/cwpack/cwpack-read.o $(common-objs)
+	$(CC) $(LDFLAGS) -o $@ $^
+
+.PHONY: run-cwpack-read
+run-cwpack-read: build/cwpack-read data-mp
+	build/cwpack-read $(OBJECT_SIZES)
+
+# cwpack-write
+
+build/cwpack/cwpack-write.o: $(common-headers) $(cwpack-header) src/cwpack/cwpack-write.c
+	mkdir -p build/cwpack
+	$(CC) $(CWPACKFLAGS) -c -o $@ src/cwpack/cwpack-write.c
+
+build/cwpack-write: build/cwpack/cwpack.o build/cwpack/cwpack-write.o $(common-objs)
+	$(CC) $(LDFLAGS) -o $@ $^
+
+.PHONY: run-cwpack-write
+run-cwpack-write: build/cwpack-write
+	build/cwpack-write $(OBJECT_SIZES)
 
 
 
