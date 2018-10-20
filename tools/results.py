@@ -38,6 +38,7 @@ urlrefs = {
     "json-builder-lib": "https://github.com/udp/json-builder",
     "ubj": "https://github.com/Steve132/ubj",
     "mongo-cxx": "https://github.com/mongodb/mongo-cxx-driver",
+    "cwpack": "https://github.com/clwi/CWPack",
 }
 
 info = { # fullname, urlref, config
@@ -59,6 +60,7 @@ info = { # fullname, urlref, config
     "ubj-": ["ubj", "ubj", ""],
     "ubj-opt-": ["ubj", "ubj", " \\[optimized]"],
     "mongo-cxx-": ["MongoDB Legacy", "mongo-cxx", ""],
+    "cwpack-": ["CWPack", "cwpack", ""],
 }
 
 size_results = len(sys.argv) > 1 and sys.argv[1] == "size"
@@ -290,6 +292,7 @@ for size in range(1,6):
     rows = []
     addrow(rows, sizedata, 'mpack-write', True)
     addrow(rows, sizedata, 'cmp-write', True)
+    addrow(rows, sizedata, 'cwpack-write', True)
     addrow(rows, sizedata, 'msgpack-cpp-pack', True)
     addrow(rows, sizedata, 'msgpack-c-pack', True)
     addrow(rows, sizedata, 'rapidjson-write', True)
@@ -338,6 +341,7 @@ for size in range(1,6):
     rows = []
     addrow(rows, sizedata, 'mpack-read', False)
     addrow(rows, sizedata, 'cmp-read', False)
+    addrow(rows, sizedata, 'cwpack-read', False)
     addrow(rows, sizedata, 'rapidjson-insitu-sax', False)
     addrow(rows, sizedata, 'yajl-parse', False)
     addrow(rows, sizedata, 'libbson-iter', False)

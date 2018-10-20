@@ -14,6 +14,7 @@ This is a benchmarking suite to test the performance of parsers for schemaless d
 [mongo-cxx]: https://github.com/mongodb/mongo-cxx-driver
 [ubj]: https://github.com/Steve132/ubj
 [libbson]: https://github.com/mongodb/libbson
+[cwpack]: https://github.com/clwi/CWPack
 
 - JSON
     - [RapidJSON][rapidjson]
@@ -27,6 +28,7 @@ This is a benchmarking suite to test the performance of parsers for schemaless d
     - [msgpack C/C++][msgpack]
     - [MPack][mpack]
     - [CMP][cmp]
+    - [CWPack][cwpack]
 - UBJSON
     - [ubj][ubj]
 - Binn
