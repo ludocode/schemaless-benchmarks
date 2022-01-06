@@ -29,7 +29,7 @@ LDOPTFLAGS := -s -fuse-linker-plugin -fuse-ld=gold
 # Resolved compiler flags
 # We specify defaults of the most recent language standards. The individual
 # libraries may override them (e.g. YAJL which specifies -std=c99)
-CPPFLAGS := -Wall -fPIC -DPIC $(OPTFLAGS) -Isrc/common
+CPPFLAGS := -Wall -fPIC -DPIC -Wno-error $(OPTFLAGS) -Isrc/common
 CFLAGS := $(CPPFLAGS) -std=c11
 CXXFLAGS := $(CPPFLAGS) -std=gnu++14 # we use anonymous structs
 LDFLAGS  := $(CPPFLAGS) $(LDOPTFLAGS)
